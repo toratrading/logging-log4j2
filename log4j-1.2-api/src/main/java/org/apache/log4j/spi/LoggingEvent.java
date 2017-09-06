@@ -16,8 +16,20 @@
  */
 package org.apache.log4j.spi;
 
+import org.apache.log4j.Category;
+import org.apache.log4j.Priority;
+
 /**
  *  No-op version of Log4j 1.2 LoggingEvent.
  */
 public class LoggingEvent {
+
+	public LoggingEvent() {
+		// nothing to do
+	}
+
+	public LoggingEvent(String fqnOfCategoryClass, Category logger,
+						Priority level, Object message, Throwable throwable) {
+		// nothing to do
+	}
 }
