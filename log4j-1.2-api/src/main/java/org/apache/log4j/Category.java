@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.spi.LoggerFactory;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.util.NameUtil;
@@ -444,6 +445,10 @@ public class Category {
             final Message msg = new ObjectMessage(message);
             forcedLog(fqcn, priority, msg, t);
         }
+    }
+
+    public LoggerRepository getLoggerRepository() {
+        return LogManager.getLoggerRepository();
     }
 
     private void maybeLog(final String fqcn, final org.apache.logging.log4j.Level level,
