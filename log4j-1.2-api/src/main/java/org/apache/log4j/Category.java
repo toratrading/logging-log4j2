@@ -451,6 +451,10 @@ public class Category {
         return LogManager.getLoggerRepository();
     }
 
+    public static LoggerRepository getDefaultHierarchy() {
+        return LogManager.getLoggerRepository();
+    }
+
     private void maybeLog(final String fqcn, final org.apache.logging.log4j.Level level,
             final Object message, final Throwable throwable) {
         if (logger.isEnabled(level, null, message, throwable)) {
