@@ -20,6 +20,7 @@ import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.Priority;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -32,13 +33,24 @@ public class LoggingEvent implements java.io.Serializable {
 	private Priority level;
 	public String fqnOfCategoryClass;
 	public long timeStamp;
+	private Object message;
+	private ThrowableInformation throwableInfo;
+	private String threadName;
 
 	public LoggingEvent(String fqnOfCategoryClass, Category logger,
 						Priority level, Object message, Throwable throwable) {
-		this.fqnOfCategoryClass = fqnOfCategoryClass;
-		this.logger = logger;
-		this.level = level;
-		this.timeStamp = System.currentTimeMillis();
+		this(
+				fqnOfCategoryClass,
+				logger,
+				System.currentTimeMillis(),
+				Level.toLevel(level.toString()),
+				message,
+				Thread.currentThread().getName(),
+				new ThrowableInformation(throwable),
+				"",
+				new LocationInfo(throwable, fqnOfCategoryClass),
+				Collections.emptyMap()
+		);
 	}
 
 	public LoggingEvent(String fqnOfCategoryClass,
@@ -55,10 +67,16 @@ public class LoggingEvent implements java.io.Serializable {
 		this.logger = logger;
 		this.level = level;
 		this.timeStamp = timeStamp;
+		this.message = message;
+		this.throwableInfo = throwable;
+		if (threadName == null) {
+			threadName = (Thread.currentThread()).getName();
+		}
+		this.threadName = threadName;
 	}
 
 	public String getRenderedMessage() {
-		return "";
+		return message == null ? "" : String.valueOf(message);
 	}
 
 	public Category getLogger() {
@@ -66,7 +84,7 @@ public class LoggingEvent implements java.io.Serializable {
 	}
 
 	public String[] getThrowableStrRep() {
-		return EMPTY_STRING_ARRAY;
+		return this.throwableInfo == null ? EMPTY_STRING_ARRAY : this.throwableInfo.getThrowableStrRep();
 	}
 
 	public Level getLevel() {
@@ -74,6 +92,6 @@ public class LoggingEvent implements java.io.Serializable {
 	}
 
 	public String getThreadName() {
-		return Thread.currentThread().getName();
+		return threadName;
 	}
 }
