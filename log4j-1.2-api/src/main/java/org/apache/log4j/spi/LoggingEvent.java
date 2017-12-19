@@ -45,7 +45,7 @@ public class LoggingEvent implements java.io.Serializable {
 						long timeStamp, Priority level, Object message, Throwable throwable) {
 		this.fqnOfCategoryClass = fqnOfCategoryClass;
 		this.logger = logger;
-		this.level = Level.toLevel(level.toString());
+		this.level = level;
 		this.message = message;
 		if (throwable != null) {
 			this.throwableInfo = new ThrowableInformation(throwable);
