@@ -20,7 +20,6 @@ import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.Priority;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -39,18 +38,19 @@ public class LoggingEvent implements java.io.Serializable {
 
 	public LoggingEvent(String fqnOfCategoryClass, Category logger,
 						Priority level, Object message, Throwable throwable) {
-		this(
-				fqnOfCategoryClass,
-				logger,
-				System.currentTimeMillis(),
-				Level.toLevel(level.toString()),
-				message,
-				Thread.currentThread().getName(),
-				new ThrowableInformation(throwable),
-				"",
-				new LocationInfo(throwable, fqnOfCategoryClass),
-				Collections.emptyMap()
-		);
+		this(fqnOfCategoryClass, logger, System.currentTimeMillis(), level, message, throwable);
+	}
+
+	public LoggingEvent(String fqnOfCategoryClass, Category logger,
+						long timeStamp, Priority level, Object message, Throwable throwable) {
+		this.fqnOfCategoryClass = fqnOfCategoryClass;
+		this.logger = logger;
+		this.level = Level.toLevel(level.toString());
+		this.message = message;
+		if (throwable != null) {
+			this.throwableInfo = new ThrowableInformation(throwable);
+		}
+		this.timeStamp = timeStamp;
 	}
 
 	public LoggingEvent(String fqnOfCategoryClass,
@@ -59,7 +59,7 @@ public class LoggingEvent implements java.io.Serializable {
 						Level level,
 						Object message,
 						String threadName,
-						ThrowableInformation throwable,
+						ThrowableInformation throwableInfo,
 						String ndc,
 						LocationInfo info,
 						Map properties) {
@@ -68,10 +68,7 @@ public class LoggingEvent implements java.io.Serializable {
 		this.level = level;
 		this.timeStamp = timeStamp;
 		this.message = message;
-		this.throwableInfo = throwable;
-		if (threadName == null) {
-			threadName = (Thread.currentThread()).getName();
-		}
+		this.throwableInfo = throwableInfo;
 		this.threadName = threadName;
 	}
 
@@ -92,6 +89,9 @@ public class LoggingEvent implements java.io.Serializable {
 	}
 
 	public String getThreadName() {
-		return threadName;
+		if (this.threadName == null) {
+			this.threadName = Thread.currentThread().getName();
+		}
+		return this.threadName;
 	}
 }
