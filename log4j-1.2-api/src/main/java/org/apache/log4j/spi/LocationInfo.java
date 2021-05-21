@@ -27,6 +27,12 @@ public class LocationInfo implements java.io.Serializable {
 
     public String fullInfo;
 
+    public LocationInfo(Throwable throwable, String fqnOfCategoryClass) {
+        this(throwable != null && throwable.getStackTrace().length > 0
+                ? throwable.getStackTrace()[0]
+                : new StackTraceElement(fqnOfCategoryClass, NA, null, 0));
+    }
+
     public LocationInfo(StackTraceElement element) {
         this.element = element;
     }

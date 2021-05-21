@@ -24,7 +24,7 @@ import org.apache.log4j.spi.OptionHandler;
 /**
  * The base class for Appenders in Log4j 1. Appenders constructed using this are ignored in Log4j 2.
  */
-public abstract class AppenderSkeleton implements Appender, OptionHandler {
+public class AppenderSkeleton implements Appender, OptionHandler {
 
     protected Layout layout;
 
@@ -63,11 +63,16 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
         }
     }
 
-    protected abstract void append(LoggingEvent event);
+    protected void append(LoggingEvent event) {
+    }
 
     @Override
     public void clearFilters() {
         headFilter = tailFilter = null;
+    }
+
+    @Override
+    public void close() {
     }
 
     @Override
@@ -135,6 +140,11 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
     @Override
     public void setName(final String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean requiresLayout() {
+        return false;
     }
 
     public void setThreshold(final Priority threshold) {

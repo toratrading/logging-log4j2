@@ -18,6 +18,7 @@ package org.apache.log4j.spi;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
+import org.apache.log4j.Priority;
 import org.apache.log4j.bridge.LogEventAdapter;
 
 import java.util.Map;
@@ -27,7 +28,57 @@ import java.util.Set;
  *  No-op version of Log4j 1.2 LoggingEvent. This class is not directly used by Log4j 1.x clients but is used by
  *  the Log4j 2 LogEvent adapter to be compatible with Log4j 1.x components.
  */
-public class LoggingEvent {
+public class LoggingEvent implements java.io.Serializable {
+
+	private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+	private Category logger;
+	private Priority level;
+    private String fqnOfCategoryClass;
+    private long timeStamp;
+	private Object message;
+	private ThrowableInformation throwableInfo;
+	private String threadName;
+
+    public LoggingEvent() {
+    }
+
+
+	public LoggingEvent(String fqnOfCategoryClass, Category logger,
+						Priority level, Object message, Throwable throwable) {
+		this(fqnOfCategoryClass, logger, System.currentTimeMillis(), level, message, throwable);
+	}
+
+	public LoggingEvent(String fqnOfCategoryClass, Category logger,
+						long timeStamp, Priority level, Object message, Throwable throwable) {
+		this.fqnOfCategoryClass = fqnOfCategoryClass;
+		this.logger = logger;
+		this.level = level;
+		this.message = message;
+		if (throwable != null) {
+			this.throwableInfo = new ThrowableInformation(throwable);
+		}
+		this.timeStamp = timeStamp;
+	}
+
+	public LoggingEvent(String fqnOfCategoryClass,
+						Category logger,
+						long timeStamp,
+						Level level,
+						Object message,
+						String threadName,
+						ThrowableInformation throwableInfo,
+						String ndc,
+						LocationInfo info,
+						Map properties) {
+		this.fqnOfCategoryClass = fqnOfCategoryClass;
+		this.logger = logger;
+		this.level = level;
+		this.timeStamp = timeStamp;
+		this.message = message;
+		this.throwableInfo = throwableInfo;
+		this.threadName = threadName;
+	}
 
     /**
      Set the location information for this logging event. The collected
@@ -44,7 +95,7 @@ public class LoggingEvent {
      * @return Always returns null.
      */
     public Level getLevel() {
-        return null;
+        return (Level)level;
     }
 
     /**
@@ -53,15 +104,15 @@ public class LoggingEvent {
      * @return Always returns null.
      */
     public String getLoggerName() {
-        return null;
+        return logger.getName();
     }
 
     public String getFQNOfLoggerClass() {
-        return null;
+        return fqnOfCategoryClass;
     }
 
     public final long getTimeStamp() {
-        return 0;
+        return timeStamp;
     }
 
     /**
@@ -71,7 +122,7 @@ public class LoggingEvent {
      * @since 1.2.15
      */
     public Category getLogger() {
-        return null;
+        return logger;
     }
 
     /**
@@ -85,7 +136,7 @@ public class LoggingEvent {
      @since 1.1 */
     public
     Object getMessage() {
-        return null;
+        return message;
     }
 
     public
@@ -106,7 +157,7 @@ public class LoggingEvent {
     }
 
     public String getRenderedMessage() {
-        return null;
+        return message == null ? "" : String.valueOf(message);
     }
 
     /**
@@ -119,7 +170,10 @@ public class LoggingEvent {
     }
 
     public String getThreadName() {
-        return null;
+        if (this.threadName == null) {
+            this.threadName = Thread.currentThread().getName();
+        }
+        return this.threadName;
     }
 
     /**
@@ -131,7 +185,7 @@ public class LoggingEvent {
      @return Always returns null.
      @since 1.1 */
     public ThrowableInformation getThrowableInformation() {
-        return null;
+        return throwableInfo;
     }
 
     /**
@@ -139,7 +193,7 @@ public class LoggingEvent {
      @return Always returns null.
      */
     public String[] getThrowableStrRep() {
-        return null;
+        return this.throwableInfo == null ? EMPTY_STRING_ARRAY : this.throwableInfo.getThrowableStrRep();
     }
 
     public void setProperty(final String propName,

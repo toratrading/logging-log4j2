@@ -28,6 +28,7 @@ import org.apache.log4j.legacy.core.CategoryUtil;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererSupport;
 import org.apache.log4j.spi.LoggerFactory;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
@@ -501,6 +502,14 @@ public class Category {
             final Message msg = new ObjectMessage(message);
             forcedLog(fqcn, priority, msg, t);
         }
+    }
+
+    public LoggerRepository getLoggerRepository() {
+        return LogManager.getLoggerRepository();
+    }
+
+    public static LoggerRepository getDefaultHierarchy() {
+        return LogManager.getLoggerRepository();
     }
 
     private void maybeLog(final String fqcn, final org.apache.logging.log4j.Level level,

@@ -24,6 +24,21 @@ import org.apache.log4j.spi.LoggingEvent;
 public class ConsoleAppender extends AppenderSkeleton {
 
     /**
+     * Constructs an unconfigured appender.
+     */
+    public ConsoleAppender() {
+    }
+
+    /**
+     * Creates a configured appender.
+     *
+     * @param layout layout, may not be null.
+     */
+    public ConsoleAppender(Layout layout) {
+        setLayout(layout);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
