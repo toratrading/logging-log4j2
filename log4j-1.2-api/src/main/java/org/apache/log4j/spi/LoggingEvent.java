@@ -34,8 +34,8 @@ public class LoggingEvent implements java.io.Serializable {
 
 	private Category logger;
 	private Priority level;
-    private String fqnOfCategoryClass;
-    private long timeStamp;
+    public String fqnOfCategoryClass;
+    public long timeStamp;
 	private Object message;
 	private ThrowableInformation throwableInfo;
 	private String threadName;
